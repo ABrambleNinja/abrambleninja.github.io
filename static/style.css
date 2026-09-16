@@ -1,0 +1,543 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --text-color: #000;
+
+    --bg-color: #333;
+    --paper-color: #eee;
+    --paper-color-2: #c7c7c7;
+
+    --accent-color-1: #9e1f9e;
+    --accent-color-2: #cd8cc0;
+    --accent-color-3: #570157;
+
+    --border-gradient-1: var(--accent-color-2);
+    --border-gradient-2: var(--accent-color-1);
+
+    --border-thin: 1px;
+    --border-thick: 4px;
+
+    --link-color: var(--accent-color-3);
+    --visited-link-color: var(--link-color);
+    --hover-link-color: var(--accent-color-2);
+    --hover-link-bg: var(--accent-color-3);
+
+    --selection-text-color: var(--accent-color-2);
+    --selection-bg-color: var(--accent-color-3);
+
+    --box-shadow-color: #000;
+    --box-shadow-size: 8px;
+
+    --rule-color: #000;
+    --rule-height: 2px;
+
+    --col-1-width: 0.7;
+    /* FIXME: maybe switch to ch-based width? */
+
+    --small-h-space: 1ch;
+    --med-h-space: 2ch;
+    --large-h-space: 4ch;
+
+    --standard-v-space: 1lh;
+
+    --grid-h-gap: var(--med-h-space);
+    --grid-v-gap: var(--standard-v-space);
+
+    --page-padding: var(--med-h-space);
+    --page-max-width: 80rem;
+    /* FIXME: maybe use 120ch? */
+    --page-min-height: 85vh;
+
+    --font-family: "Intel One Mono", monospace;
+    --font-size-reg: 1rem;
+    --font-size-h1: 1.5rem;
+
+    --border-gradient:
+        padding-box linear-gradient(var(--paper-color), var(--paper-color)),
+        border-box
+            linear-gradient(
+                to right,
+                var(--border-gradient-1),
+                var(--border-gradient-2)
+            );
+
+    --border-gradient-inverted:
+        padding-box linear-gradient(var(--paper-color), var(--paper-color)),
+        border-box
+            linear-gradient(
+                to right,
+                var(--border-gradient-2),
+                var(--border-gradient-1)
+            );
+
+    --deep-box-shadow: var(--box-shadow-size) var(--box-shadow-size) 0px 0px
+        var(--box-shadow-color);
+}
+
+html {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+*::selection {
+    background-color: var(--selection-bg-color);
+}
+
+/* we want descendants of .giallo to keep their original color on selection, so
+we exclude them from this rule. note that for other elements we will override
+this later, but it would be hard to override it for the descendants of .giallo
+because those are set elsewhere. */
+*:not(.giallo *)::selection {
+    color: var(--selection-text-color);
+}
+
+html,
+code,
+pre {
+    font-family: var(--font-family);
+}
+
+body {
+    margin: var(--standard-v-space) var(--med-h-space);
+}
+
+.page {
+    display: grid;
+    gap: var(--grid-v-gap) var(--grid-h-gap);
+    grid-template-columns: calc(100% * var(--col-1-width)) auto;
+
+    max-width: var(--page-max-width);
+    min-height: var(--page-min-height);
+
+    align-content: start;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    padding: var(--page-padding);
+
+    border: var(--border-thick) solid transparent;
+    background: var(--border-gradient);
+}
+
+span#continue-reading {
+    display: none;
+}
+
+.aside {
+    display: block;
+    padding: var(--small-h-space);
+}
+
+.aside:before {
+    content: "(aside)";
+    display: block;
+}
+
+header,
+.col-1,
+.col-2,
+.message {
+    grid-column: 1 / -1;
+}
+
+header {
+    display: grid;
+    grid-template-columns: subgrid;
+    gap: var(--grid-v-gap) var(--grid-h-gap);
+}
+
+header > * {
+    grid-column: 1 / -1;
+}
+
+/* Show columns on larger screens */
+@media (min-width: 1000px) {
+    .col-1,
+    .message:has(.aside) {
+        grid-column: 1;
+    }
+
+    .col-2 {
+        grid-column: 2;
+    }
+
+    .full-width,
+    .message:not(:has(.aside)) {
+        grid-column: 1 / -1;
+    }
+
+    .page {
+        position: relative;
+    }
+
+    /* Pseudo-column for asides */
+    /* We can't use grid-column here, because it will not necessarily be a direct child of .page. */
+    .aside {
+        position: absolute;
+        left: calc(
+            var(--page-padding) + var(--grid-h-gap) +
+                (100% - 2 * var(--page-padding)) * var(--col-1-width)
+        );
+        right: var(--page-padding);
+    }
+
+    .aside:before {
+        content: "";
+    }
+}
+
+ul.inline {
+    display: inline-block;
+    list-style: none;
+    padding: 0;
+}
+
+ul.inline > li {
+    display: inline;
+}
+
+ul.inline.separator > li:not(:last-child)::after {
+    content: var(--separator);
+}
+
+ul.inline.bar-separator {
+    --separator: " | ";
+}
+
+ul.inline.slash-separator {
+    --separator: " / ";
+}
+
+ul.inline.bracketed-list {
+    --separator: ", ";
+}
+
+ul.inline.bracketed-list li:first-child::before {
+    content: "[";
+}
+
+ul.inline.bracketed-list > li:last-child::after {
+    content: "]";
+}
+
+.aside,
+.message {
+    border: var(--border-thin) solid transparent;
+    background: var(--border-gradient-inverted);
+
+    box-shadow: var(--deep-box-shadow);
+}
+
+.message {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--grid-v-gap);
+
+    align-self: stretch;
+
+    font-size: var(--font-size-reg);
+    padding: var(--standard-v-space) var(--med-h-space);
+
+    margin-right: var(--box-shadow-size);
+    margin-bottom: var(--box-shadow-size);
+}
+
+.aside {
+    --desired-margin-left-right: var(--small-h-space);
+
+    margin-left: var(--desired-margin-left-right);
+    margin-right: calc(
+        var(--box-shadow-size) + var(--desired-margin-left-right)
+    );
+    margin-bottom: calc(
+        var(--box-shadow-size) + var(--desired-margin-top-bottom)
+    );
+}
+
+h1 {
+    font-size: var(--font-size-h1);
+}
+
+h1:not(.no-rule),
+hr {
+    border: none;
+    border-bottom: var(--rule-height) solid var(--rule-color);
+}
+
+hr {
+    width: 100%;
+}
+
+p {
+    text-indent: var(--med-h-space);
+}
+
+a {
+    color: var(--link-color);
+    text-decoration: underline var(--link-color);
+}
+
+a:visited {
+    color: var(--visited-link-color);
+}
+
+/* give hovered and selected links the same color, */
+a:hover,
+a::selection {
+    color: var(--hover-link-color);
+}
+
+/* but give hovered a different background color */
+a:hover {
+    background-color: var(--hover-link-bg);
+}
+
+/* than selected. */
+a::selection {
+    background-color: var(--accent-color-1);
+}
+
+a[rel="external"]::after {
+    content: "⤴";
+}
+
+blockquote {
+    --border-width: var(--border-thick);
+
+    border-left: var(--border-width) solid var(--rule-color);
+    padding-left: calc(var(--large-h-space) - var(--border-width));
+    margin-left: 0;
+    margin-right: 0;
+}
+
+ul,
+ol {
+    list-style-position: inside;
+    padding-left: var(--med-h-space);
+}
+
+ul {
+    list-style-type: "- ";
+}
+
+li > p {
+    display: inline;
+    margin-bottom: 0;
+    margin-left: -1ch;
+    text-indent: 0;
+}
+
+li {
+    margin-bottom: 0;
+}
+
+ol {
+    list-style-type: none;
+    counter-reset: list-item;
+}
+
+ol > li {
+    counter-increment: list-item;
+}
+
+ol > li:before {
+    content: "[" counter(list-item, decimal-leading-zero) "] ";
+}
+
+table {
+    border-collapse: collapse;
+    /*table-layout: fixed;*/
+}
+
+th,
+td {
+    text-align: left;
+    vertical-align: top;
+}
+
+table,
+thead {
+    border: var(--border-thin) solid var(--rule-color);
+}
+
+thead ~ tbody > tr:first-child > td,
+thead ~ tbody > tr:first-child > th {
+    padding-top: calc(1lh - var(--border-thin));
+}
+
+th,
+td {
+    padding-left: calc(var(--small-h-space) - var(--border-thin));
+}
+
+thead th:last-child,
+tbody td:last-child {
+    padding-right: calc(var(--small-h-space) - var(--border-thin));
+}
+
+/* inline code block */
+code:not(pre > code) {
+    color: var(--accent-color-3);
+    background-color: var(--paper-color-2);
+    display: inline-block;
+    text-indent: 0;
+}
+
+/* we use the :not(.giallo *) here to increase specificity */
+code:not(pre > code):not(.giallo *)::selection {
+    color: var(--accent-color-1);
+    background-color: var(--accent-color-2);
+}
+
+a:hover > code {
+    color: inherit;
+    background-color: inherit;
+}
+
+pre {
+    align-self: stretch;
+    max-width: 100ch;
+    --width-in-chars: round(calc(100% / 1ch));
+    padding: var(--standard-v-space) var(--small-h-space);
+}
+
+pre::before {
+    display: block;
+    margin: calc(-1 * var(--standard-v-space)) calc(-1 * var(--small-h-space))
+        var(--standard-v-space);
+
+    background-color: var(--accent-color-2);
+    color: var(--text-color);
+
+    /*
+    we don't actually want to center or have zero left padding here; these rules
+    will get overriden by either a webkit-only selector for chrome/safari/edge,
+    or a js shim for firefox. this only applies if the user is on firefox with
+    js disabled.
+    */
+    text-align: center;
+    padding-left: 0;
+
+    /* the length of "[language: ]" */
+    --language-wrapper-len: 12;
+
+    /* this will get overriden if the code block specifies a type */
+    --language: "unknown";
+    --language-len: 7;
+
+    content: "[language: " var(--language) "]";
+
+    /*
+    we want to center the language string, but char-aligned to keep the
+    monospace look, so we calculate the width of the container in chars (set on
+    the pre element so that it can be overriden with js), minus the language
+    string length, and divide by 2 to get the desired padding left.
+    */
+
+    --total-language-len: calc(
+        var(--language-len) + var(--language-wrapper-len)
+    );
+
+    --chars-minus-len: calc(var(--width-in-chars) - var(--total-language-len));
+
+    --desired-padding-left: calc(round(var(--chars-minus-len) / 2) * 1ch);
+}
+
+/* firefox does not currently support calc division with units, so in the mean
+   time, we set the desired property only for non-webkit browsers
+*/
+@supports selector(::-webkit-scrollbar) {
+    pre::before {
+        text-align: left;
+        padding-left: var(--desired-padding-left);
+    }
+}
+
+/* or we use a js shim to give the same functionality to firefox
+*/
+pre.js-width-shim::before {
+    text-align: left;
+    padding-left: var(--desired-padding-left);
+}
+
+pre:has(code[data-lang="rust"])::before {
+    --language: "rust";
+    --language-len: 4;
+}
+
+.giallo-ln {
+    user-select: none;
+    padding-right: var(--small-h-space);
+}
+
+sup.footnote-reference,
+sup.footnote-definition-label {
+    vertical-align: baseline;
+    font-size: inherit;
+}
+
+sup.footnote-reference::before {
+    content: "[^";
+}
+
+sup.footnote-reference::after {
+    content: "]";
+}
+
+sup.footnote-definition-label::before {
+    content: "[";
+}
+
+sup.footnote-definition-label::after {
+    content: "]";
+}
+
+.padded-border {
+    border: var(--border-thin) solid var(--rule-color);
+    padding: calc(var(--standard-v-space) - var(--border-thin))
+        calc(var(--med-h-space) - var(--border-thin));
+}
+
+/* unfortunately the markdown generator doesn't place the footnotes in a single
+element, so we have to add a top border to the first, a bottom border to the
+last, and side borders to all of them to draw a box around the whole collection.
+*/
+.footnote-definition:first-of-type {
+    border-top: var(--border-thin) solid var(--rule-color);
+    padding-top: calc(var(--standard-v-space) - var(--border-thin));
+}
+
+.footnote-definition:last-of-type {
+    border-bottom: var(--border-thin) solid var(--rule-color);
+    padding-bottom: calc(var(--standard-v-space) - var(--border-thin));
+}
+
+.footnote-definition {
+    border-left: var(--border-thin) solid var(--rule-color);
+    border-right: var(--border-thin) solid var(--rule-color);
+
+    padding-left: calc(var(--med-h-space) - var(--border-thin));
+    padding-right: calc(var(--med-h-space) - var(--border-thin));
+
+    align-self: stretch;
+}
+
+/* we also have to collapse the gap between footnote definitions from the
+flexbox parent */
+.footnote-definition:not(:first-of-type) {
+    margin-top: calc(-1 * var(--standard-v-space));
+}
+
+.footnote-definition p {
+    display: inline;
+}
+
+.authors p {
+    display: inline;
+}

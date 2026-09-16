@@ -1,0 +1,136 @@
+{% macro link_to_author_by_taxonomy(author) %}<a href="{{ author.permalink | safe }}">{{ author.name }}</a>{% endmacro link_to_author_by_taxonomy %}
+
+{% macro link_to_author_by_name(name) %}
+{% set author = get_taxonomy_term(kind="author", term=name) %}
+{{ self::link_to_author_by_taxonomy(author=author) }}
+{% endmacro link_to_author_by_name %}
+
+{% macro author_bio(author, short) %}
+{% if short %}
+    {% set lookup_key="summary" %}
+{% else %}
+    {% set lookup_key="content" %}
+{% endif %}
+{{ get_page(path="author/" ~ author.slug ~ ".md") | get(key=lookup_key) | safe }}
+{% if short %}
+{{ self::read_more(page=author) }}
+{% endif %}
+
+{% endmacro author_bio %}
+
+{% macro author_table(author, num_posts_to_show) %}
+
+{% set author_page = get_page(path="author/" ~ author.slug ~ ".md") %}
+
+<table class="infobox">
+    <thead>
+        <tr>
+            <th>author</th>
+            <td>{{ macros::link_to_author_by_taxonomy(author=author) }}</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>num_posts</th>
+            <td>{{ author.page_count }}</td>
+        </tr>
+
+        {% set fun_facts = author_page.extra.fun_facts %}
+        {% for elem in fun_facts %}
+            <tr>
+                <th>{{ elem.category | safe }}</th>
+                <td>{{ elem.fact | safe }}</td>
+            </tr>
+        {% endfor %}
+
+        {% for post in author.pages | slice(end=num_posts_to_show) %}
+            <tr>
+                <th>nth_recent_post({{ loop.index0 }})</th>
+                <td><a href="{{ post.permalink }}">{{ post.title }}</a></td>
+            </tr>
+        {% endfor %}
+
+    </tbody>
+</table>
+{% endmacro author_table %}
+
+{% macro read_more(page) %}
+<a href="{{ page.permalink | trim_end_matches(pat = "/") | safe }}">read more...</a>
+{% endmacro read_more %}
+
+{% macro post_preview(page, show_authors=False) %}
+<div class="message">
+    <h1> {{ page.title }} </h1>
+
+    {% if show_authors %}
+    <div class="authors">
+    <p> authors: </p>
+    <ul class="inline separator bracketed-list">
+        {% for author in page.taxonomies.author %}
+        <li>{{ self::link_to_author_by_name(name=author) }}</li>
+        {% endfor %}
+    </ul>
+    </div>
+    {% endif %}
+
+    {{ page.summary | safe }}
+
+    {{ self::read_more(page=page) }}
+
+</div>
+{% endmacro post_preview %}
+
+{% macro header(elems) %}
+
+    <li><a href="{{ config.base_url | safe }}">{{ config.extra.site_name }}</a></li>
+
+    {% for elem in elems %}
+        <li>{{elem | safe }}</li>
+    {% endfor %}
+
+{% endmacro header %}
+
+{% macro header_taxonomy(taxonomy, term) %}
+
+    {% if term %}
+        {% set last_elem = term.name %}
+        {#
+        for some reason, the `taxonomy` element (which should be of type
+        `TaxonomyConfig`) passed in does not have a `permalink` key, but if we
+        get the taxonomy using `get_taxonomy` (which should also be of type
+        `TaxonomyConfig`, it does have the key
+        #}
+        {% set taxonomy_permalink = get_taxonomy(kind=taxonomy.name) | get(key="permalink") %}
+        {% set taxonomy_category = '<a href="' ~ taxonomy_permalink ~ '">' ~ taxonomy.name ~ '</a>' %}
+    {% else %}
+        {% set last_elem = "index" %}
+        {% set taxonomy_category = taxonomy.name %}
+    {% endif %}
+
+    {{ self::header(elems=[taxonomy_category, last_elem]) }}
+
+{% endmacro header_taxonomy_term %}
+
+{% macro header_blog_index() %}
+
+    {{ self::header(elems=["blog", "index"]) }}
+
+{% endmacro %}
+
+{% macro header_blog_page(page_name) %}
+
+    {% set section = get_section(path="blog/_index.md") %}
+
+    {% set blog_link = '<a href="' ~ section.permalink ~ '">blog</a>' %}
+
+    {{ self::header(elems=[blog_link, page_name]) }}
+
+{% endmacro %}
+
+{#
+{% for ancestor in section.ancestors %}
+{% set ancestor_section = get_section(path=ancestor) %}
+<li> <a href="{{ ancestor_section.permalink | safe }}">{{ ancestor_section.title }}</a></li>
+{% endfor %}
+<li> <a href="{{ section.permalink | safe }}">{{ section.title }}</a></li>
+#}

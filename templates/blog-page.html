@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% import "macros.html" as macros %}
+
+{% block title %}
+blog/{{ page.slug }}
+{% endblock title %}
+
+{% block header %}
+
+{{ macros::header_blog_page(page_name=page.slug) }}
+
+{% endblock header %}
+
+{% block content %}
+<div class="message">
+<h1 class="title">
+  {{ page.title }}
+</h1>
+
+<table class="infobox">
+    <tbody>
+        <tr>
+            <th>slug</th>
+            <td>{{ page.slug }}</td>
+        </tr>
+        <tr>
+            <th>publish_date</th>
+            <td>{{ page.date }}</td>
+        </tr>
+        {% if page.updated %}
+        <tr>
+            <th>update_date</th>
+            <td>{{ page.updated }}</td>
+        </tr>
+        {% endif %}
+        <tr>
+            <th>reading_time</th>
+            <td>{{ page.reading_time }} min</td>
+        </tr>
+        {% for author in page.taxonomies.author %}
+        {% set author_url = get_taxonomy_url(kind="author", name=author) %}
+        <tr>
+            <th>authors[{{ loop.index0 }}]</th>
+            <td><a href="{{ author_url | safe }}">{{ author }}</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{{ page.content | safe }}
+</div>
+{% endblock content %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% import "macros.html" as macros %}
+
+{% block title %}
+{{ taxonomy.name }}/{{ term.name }}
+{% endblock title %}
+
+{% block header %}
+{{ macros::header_taxonomy(taxonomy=taxonomy, term=term) }}
+{% endblock header %}
+
+{% block content %}
+<div class="message">
+
+    {{ macros::author_table(author=term, num_posts_to_show=0) }}
+
+    <div class="message">
+        {{ macros::author_bio(author=term, short=False) }}
+    </div>
+
+    {% for post in term.pages %}
+    {{ macros::post_preview(page=post) }}
+    {% endfor %}
+</div>
+{% endblock content %}

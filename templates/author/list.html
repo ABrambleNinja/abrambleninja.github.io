@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% import "macros.html" as macros %}
+
+{% block title %}
+{{ taxonomy.name }}
+{% endblock title %}
+
+{% block header %}
+{{ macros::header_taxonomy(taxonomy=taxonomy, term=False) }}
+{% endblock header %}
+
+{% block content %}
+{% for author in terms %}
+
+<div class="message">
+    {# macros::author_info(author=author, num_posts_to_show=5, short=True) #}
+    {{ macros::author_table(author=author, num_posts_to_show=5) }}
+
+    {{ macros::author_bio(author=author, short=True) }}
+</div>
+
+
+{% endfor %}
+{% endblock content %}

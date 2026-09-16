@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% import "macros.html" as macros %}
+
+{% block title %}
+blog
+{% endblock title %}
+
+{% block header %}
+{{ macros::header_blog_index() }}
+{% endblock header %}
+
+{% block content %}
+    <div class="message">
+        <h1 class="no-rule">
+        {{ section.title }}
+        </h1>
+    </div>
+
+    {% for post in section.pages %}
+    {{ macros::post_preview(page=post, show_authors=True) }}
+    {% endfor %}
+{% endblock content %}
