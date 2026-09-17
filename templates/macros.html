@@ -113,15 +113,15 @@
 
 {% macro header_blog_index() %}
 
-    {{ self::header(elems=["blog", "index"]) }}
+    {{ self::header(elems=["posts", "index"]) }}
 
 {% endmacro %}
 
 {% macro header_blog_page(page_name) %}
 
-    {% set section = get_section(path="blog/_index.md") %}
+    {% set section = get_section(path="posts/_index.md") %}
 
-    {% set blog_link = '<a href="' ~ section.permalink ~ '">blog</a>' %}
+    {% set blog_link = '<a href="' ~ section.permalink ~ '">posts</a>' %}
 
     {{ self::header(elems=[blog_link, page_name]) }}
 

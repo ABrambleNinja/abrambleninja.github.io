@@ -25,4 +25,4 @@ theme = "LaserWave"
 
 site_name = "a.bramble.ninja"
 
-menu = [{ url = "/author/ben", name = "about" }, { url = "/blog", name = "blog" }]
+menu = [{ url = "/author/ben", name = "about" }, { url = "/posts", name = "posts" }]
