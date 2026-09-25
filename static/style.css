@@ -329,7 +329,6 @@ ul {
 li > p {
     display: inline;
     margin-bottom: 0;
-    margin-left: -1ch;
     text-indent: 0;
 }
 
@@ -500,52 +499,20 @@ sup.footnote-reference::after {
     content: "]";
 }
 
-sup.footnote-definition-label::before {
-    content: "[";
-}
-
-sup.footnote-definition-label::after {
-    content: "]";
-}
-
-.padded-border {
+.footnotes {
     border: var(--border-thin) solid var(--rule-color);
     padding: calc(var(--standard-v-space) - var(--border-thin))
         calc(var(--med-h-space) - var(--border-thin));
+    width: 100%;
 }
 
-/* unfortunately the markdown generator doesn't place the footnotes in a single
-element, so we have to add a top border to the first, a bottom border to the
-last, and side borders to all of them to draw a box around the whole collection.
-*/
-.footnote-definition:first-of-type {
-    border-top: var(--border-thin) solid var(--rule-color);
-    padding-top: calc(var(--standard-v-space) - var(--border-thin));
+.footnotes ol {
+    padding: 0;
 }
 
-.footnote-definition:last-of-type {
-    border-bottom: var(--border-thin) solid var(--rule-color);
-    padding-bottom: calc(var(--standard-v-space) - var(--border-thin));
-}
+.footnotes ol > li::before {
 
-.footnote-definition {
-    border-left: var(--border-thin) solid var(--rule-color);
-    border-right: var(--border-thin) solid var(--rule-color);
-
-    padding-left: calc(var(--med-h-space) - var(--border-thin));
-    padding-right: calc(var(--med-h-space) - var(--border-thin));
-
-    align-self: stretch;
-}
-
-/* we also have to collapse the gap between footnote definitions from the
-flexbox parent */
-.footnote-definition:not(:first-of-type) {
-    margin-top: calc(-1 * var(--standard-v-space));
-}
-
-.footnote-definition p {
-    display: inline;
+        content: "[^" counter(list-item, decimal-leading-zero) "] ";
 }
 
 .authors p {
