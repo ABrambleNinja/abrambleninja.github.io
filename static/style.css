@@ -471,6 +471,16 @@ pre:has(code[data-lang="rust"])::before {
     --language-len: 4;
 }
 
+pre:has(code[data-lang="javascript"])::before {
+    --language: "javascript";
+    --language-len: 10;
+}
+
+pre:has(code[data-lang="css"])::before {
+    --language: "css";
+    --language-len: 3;
+}
+
 .giallo-ln {
     user-select: none;
     padding-right: var(--small-h-space);
