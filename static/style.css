@@ -102,7 +102,7 @@ pre {
 }
 
 body {
-    margin: var(--standard-v-space) var(--med-h-space);
+    margin: var(--standard-v-space) 0;
 }
 
 .page {
@@ -153,6 +153,12 @@ header {
 
 header > * {
     grid-column: 1 / -1;
+}
+
+@media (min-width: 768px) {
+    body {
+        margin: var(--standard-v-space) var(--med-h-space);
+    }
 }
 
 /* Show columns on larger screens */
@@ -246,6 +252,8 @@ ul.inline.bracketed-list > li:last-child::after {
 
     margin-right: var(--box-shadow-size);
     margin-bottom: var(--box-shadow-size);
+
+    min-width: 0;
 }
 
 .aside {
@@ -403,13 +411,22 @@ pre {
     align-self: stretch;
     max-width: 100ch;
     --width-in-chars: round(calc(100% / 1ch));
-    padding: var(--standard-v-space) var(--small-h-space);
+    padding: var(--standard-v-space) 0;
+    overflow: auto;
+}
+
+pre > code {
+    display: block;
+    padding-inline: var(--small-h-space) 0;
 }
 
 pre::before {
     display: block;
-    margin: calc(-1 * var(--standard-v-space)) calc(-1 * var(--small-h-space))
-        var(--standard-v-space);
+
+    margin: calc(-1 * var(--standard-v-space)) 0 var(--standard-v-space);
+
+    position: sticky;
+    left: 0;
 
     background-color: var(--accent-color-2);
     color: var(--text-color);
