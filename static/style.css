@@ -523,11 +523,15 @@ sup.footnote-reference::after {
     width: 100%;
 }
 
-.footnotes ol {
+.footnotes ol li {
+    margin: 1lh 0;
+}
+
+.footnotes ol li p {
     padding: 0;
 }
 
-.footnotes ol > li::before {
+.footnotes ol li::before {
 
         content: "[^" counter(list-item, decimal-leading-zero) "] ";
 }
