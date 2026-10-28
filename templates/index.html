@@ -2,7 +2,11 @@
 
 {% block content %}
 <div class="message">
-<h1 class="no-rule"> Hello! ... ... ... ... ... </h1>
+<h1 class="no-rule"> hello! welcome to my site! </h1>
+</div>
+
+<div class="message">
+  {{ section.content | safe }}
 </div>
 
 {% endblock content %}
