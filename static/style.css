@@ -286,7 +286,7 @@ p {
     text-indent: var(--med-h-space);
 }
 
-a {
+a, a code {
     color: var(--link-color);
     text-decoration: underline var(--link-color);
 }
@@ -312,7 +312,7 @@ a::selection {
 }
 
 a[rel="external"]::after {
-    content: "⤴";
+    content: "◹";
 }
 
 blockquote {
